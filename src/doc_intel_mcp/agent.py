@@ -33,11 +33,23 @@ def build_agent():
     )
     return create_agent(model=llm, tools=TOOLS, system_prompt=SYSTEM_PROMPT)
 
+def _extract_text(content) -> str:
+    """gemini-3.x returns content as a list of blocks; older models as a string."""
+    if isinstance(content, str):
+        return content
+    parts = []
+    for block in content:
+        if isinstance(block, dict) and block.get("type") == "text":
+            parts.append(block["text"])
+        elif isinstance(block, str):
+            parts.append(block)
+    return "\n".join(parts)
+
+
 def ask(question: str) -> str:
     agent = build_agent()
     result = agent.invoke({"messages": [("user", question)]})
-    return result["messages"][-1].content
-
+    return _extract_text(result["messages"][-1].content)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
