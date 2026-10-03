@@ -1,0 +1,35 @@
+[project]
+name = "doc-intel-mcp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "ge78huc", email = "ge78huc@tum.de" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.5.9",
+    "mcp>=2.3.0",
+    "pydantic>=2.13.5",
+    "pypdf>=6.19.0",
+    "sentence-transformers>=6.1.0",
+]
+
+[project.scripts]
+doc-intel-mcp = "doc_intel_mcp:main"
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
