@@ -42,3 +42,9 @@ class DocumentStore:
         """Distinct source filenames currently stored."""
         got = self._collection.get(include=["metadatas"])
         return sorted({m["source"] for m in got["metadatas"]})
+    
+    def get_chunk(self, source: str, chunk: int) -> str | None:
+        chunk_id = f"{source.replace('.pdf', '')}-{chunk}"
+        got = self._collection.get(ids=[chunk_id], include=["documents"])
+        docs = got["documents"]
+        return docs[0] if docs else None
