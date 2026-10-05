@@ -14,6 +14,7 @@ traced in Langfuse, and answer quality is measured by an LLM-as-judge eval harne
 
 > A FastAPI chat UI (served at `/`) over the agent. The project is containerized
 > with Docker and runs anywhere; the demo above is the local UI.
+
 ## Why this exists
 
 LLMs hallucinate about documents they weren't trained on, and a long PDF won't fit
@@ -56,18 +57,19 @@ Current results (6-question set):
 |-------------------|---------|
 | Faithfulness      | 4.2     |
 | Answer relevance  | 4.8     |
-| Context relevance | 3.0     |
+| Context relevance | 3.5     |
 
 What the numbers show, honestly:
 - The harness **correctly flags out-of-scope questions** (e.g. "capital of France" scores context-relevance 1, and the agent refuses to answer from the documents).
 - **Faithfulness dips** when the agent supplements retrieved context with parametric knowledge — a real behavior worth catching.
-- **Context relevance is the weakest metric**, partly a genuine eval-design limitation: the judge scores against the top-5 search results, but the agent may retrieve more via multiple tool calls, so answers can cite chunks the judge didn't see. Logging the agent's *actual* retrieved context per run (via Langfuse) and judging against that is the next improvement.
+- The judge scores against **the context the agent actually retrieved during its run** — captured per-question via an in-process recorder the retrieval tools write to — not a separate fixed top-k query. An earlier version judged against a fixed top-5, which understated context-relevance because the agent often retrieves more across multiple tool calls.
 
 Perfect scores would be a red flag here; a spread that surfaces real weaknesses is the point.
 
 ## Design notes
 
 - **Grounding guard.** The agent answers only from retrieved passages and admits when they don't cover the question.
+- **Honest evaluation.** The eval judges against the agent's *real* retrieval path, not a convenient fixed query, so the metrics reflect what actually happened.
 - **One source of truth.** Tool logic lives in plain functions; the MCP server, the agent, and the FastAPI app are thin front-ends over them. A framework change (the project survived an `mcp` 1.x→2.x and a LangGraph API break) touches one file.
 - **Local, free embeddings.** Retrieval runs offline with no API cost; only the agent's reasoning and the eval judge call a hosted LLM.
 - **Lean image.** `torch` is pinned to the CPU wheel index (declared as a direct dependency so the source override applies) — embeddings run on CPU in deployment, so the container skips ~2 GB of CUDA libraries.
@@ -102,7 +104,8 @@ uv run python -m doc_intel_mcp.agent "How does Self-RAG differ from standard RAG
 **As a web service:**
 ```bash
 uv run uvicorn doc_intel_mcp.api:app --port 8000
-# then open http://127.0.0.1:8000/docs
+# then open http://127.0.0.1:8000/        (chat UI)
+#      or   http://127.0.0.1:8000/docs     (API)
 ```
 
 **In Docker:**
@@ -133,7 +136,6 @@ Python · MCP · LangGraph · FastAPI · ChromaDB · sentence-transformers · Go
 
 ## Roadmap
 
-- Judge against the agent's actual retrieved context (not a fixed top-5) for truer context-relevance scores
 - Log eval scores back into Langfuse alongside traces
 - Multi-stage Docker build to shrink the final image
 - Smarter chunking (sentence/section-aware); swap ChromaDB for pgvector/Qdrant

@@ -48,6 +48,8 @@ def _extract_text(content) -> str:
 
 
 def ask(question: str) -> str:
+    from doc_intel_mcp import recorder
+    recorder.reset()
     agent = build_agent()
     callbacks = []
     if os.environ.get("LANGFUSE_PUBLIC_KEY"):

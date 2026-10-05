@@ -1,3 +1,4 @@
+from doc_intel_mcp import recorder
 from doc_intel_mcp.tools.documents import get_store
 
 
@@ -21,6 +22,7 @@ def answer_with_citations(question: str, n_results: int = 5) -> str:
         f"[{h['metadata']['source']} #{h['metadata']['chunk']}] {h['text']}"
         for h in hits
     )
+    recorder.record(context)
     return (
         f"QUESTION: {question}\n\n"
         f"SOURCES (answer only from these, cite as [source #chunk]):\n\n{context}"

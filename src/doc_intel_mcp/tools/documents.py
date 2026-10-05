@@ -24,13 +24,10 @@ def list_documents() -> str:
 
 
 def read_chunk(source: str, chunk: int) -> str:
-    """Read one specific chunk of a document by its source file and chunk number.
-
-    Use after `search_documents` to read more context around a relevant hit.
-
-    Args:
-        source: the document filename (e.g. 'rag.pdf').
-        chunk: the chunk number within that document.
-    """
+    """<keep your existing docstring>"""
+    from doc_intel_mcp import recorder
     text = get_store().get_chunk(source, chunk)
-    return text if text is not None else f"No chunk {chunk} found in {source}."
+    if text is None:
+        return f"No chunk {chunk} found in {source}."
+    recorder.record(f"[{source} #{chunk}] {text}")
+    return text

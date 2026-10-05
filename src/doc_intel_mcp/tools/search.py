@@ -1,3 +1,4 @@
+from doc_intel_mcp import recorder
 from doc_intel_mcp.tools.documents import get_store
 
 
@@ -18,6 +19,7 @@ def search_documents(query: str, n_results: int = 5) -> str:
     blocks = []
     for h in hits:
         meta = h["metadata"]
+        recorder.record(f"[{meta['source']} #{meta['chunk']}] {h['text']}")
         blocks.append(
             f"[{meta['source']} #{meta['chunk']}] (distance {h['distance']:.3f})\n"
             f"{h['text']}"
