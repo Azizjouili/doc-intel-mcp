@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>doc-intel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/13.0.0/marked.min.js"></script>
+<style>
+  :root{
+    --bg:#0c1413; --panel:#111b19; --panel-2:#16221f; --line:#223029;
+    --fg:#e9f1ee; --muted:#93a59f; --faint:#64756f;
+    --accent:#3cc2ad; --accent-ink:#8fe6d7; --accent-deep:#0f6b5e;
+    --user:#1d2b43; --user-line:#2b4a6b;
+    --sans:"Inter",system-ui,-apple-system,Segoe UI,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(60,194,173,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(60,194,173,.07), transparent 55%),
+      var(--bg);
+    color:var(--fg);font-family:var(--sans);line-height:1.55;
+    display:flex;flex-direction:column;
+  }
+  a{color:var(--accent-ink);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---- header ---- */
+  header{
+    padding:18px 20px 16px;border-bottom:1px solid var(--line);
+    background:rgba(12,20,19,.75);backdrop-filter:blur(10px);
+    position:sticky;top:0;z-index:5;
+  }
+  .head-in{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .logo{
+    width:40px;height:40px;border-radius:11px;flex:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+    display:grid;place-items:center;font-weight:800;color:#05221d;font-size:18px;
+    box-shadow:0 4px 18px rgba(60,194,173,.25);
+  }
+  .titles{flex:1;min-width:0}
+  .titles h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em}
+  .titles p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+  .ghlink{
+    font-size:12.5px;color:var(--muted);border:1px solid var(--line);
+    padding:7px 12px;border-radius:9px;white-space:nowrap;transition:.15s;
+  }
+  .ghlink:hover{color:var(--fg);border-color:var(--accent-deep);text-decoration:none}
+
+  /* ---- chat area ---- */
+  main{flex:1;overflow-y:auto}
+  .chat{max-width:820px;margin:0 auto;padding:24px 20px 10px;display:flex;flex-direction:column;gap:18px}
+
+  .msg{display:flex;gap:12px;align-items:flex-start;animation:rise .25s ease}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .av{width:30px;height:30px;border-radius:8px;flex:none;display:grid;place-items:center;
+      font-size:12px;font-weight:700;margin-top:2px}
+  .msg.bot .av{background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#05221d}
+  .msg.user .av{background:var(--user);color:#bcd0ee;border:1px solid #2b4a6b}
+  .msg.user{flex-direction:row-reverse}
+  .bubble{
+    padding:13px 16px;border-radius:14px;max-width:100%;min-width:0;font-size:15px;
+    border:1px solid var(--line);
+  }
+  .msg.bot .bubble{background:var(--panel);border-top-left-radius:4px}
+  .msg.user .bubble{background:var(--user);border:1px solid #2b4a6b;border-top-right-radius:4px}
+  .bubble :first-child{margin-top:0}
+  .bubble :last-child{margin-bottom:0}
+  .bubble p{margin:0 0 10px}
+  .bubble ul,.bubble ol{margin:0 0 10px;padding-left:20px}
+  .bubble li{margin:3px 0}
+  .bubble strong{color:#fff;font-weight:600}
+  .bubble code{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);padding:1px 6px;border-radius:5px}
+  .cite{
+    font-family:var(--mono);font-size:11px;color:var(--accent-ink);
+    background:rgba(60,194,173,.12);border:1px solid rgba(60,194,173,.3);
+    padding:1px 6px;border-radius:6px;white-space:nowrap;
+  }
+
+  /* typing indicator */
+  .dots{display:inline-flex;gap:4px;align-items:center;padding:4px 2px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:.5;animation:blink 1.2s infinite}
+  .dots i:nth-child(2){animation-delay:.2s}
+  .dots i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  /* ---- empty state ---- */
+  .hero{max-width:820px;margin:0 auto;padding:40px 20px 10px;text-align:center}
+  .hero h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+  .hero p{color:var(--muted);font-size:14.5px;max-width:56ch;margin:0 auto 22px}
+  .examples{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:640px;margin:0 auto}
+  .ex{
+    text-align:left;font-size:13.5px;color:var(--fg);background:var(--panel);
+    border:1px solid var(--line);border-radius:11px;padding:11px 14px;cursor:pointer;
+    transition:.15s;max-width:300px;
+  }
+  .ex:hover{border-color:var(--accent-deep);background:var(--panel-2);transform:translateY(-1px)}
+  .ex b{display:block;color:var(--accent-ink);font-size:11px;font-weight:600;
+        text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-family:var(--mono)}
+
+  /* ---- input ---- */
+  .composer{border-top:1px solid var(--line);background:rgba(12,20,19,.8);backdrop-filter:blur(10px);
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+  .composer-in{max-width:820px;margin:0 auto;display:flex;gap:10px;align-items:flex-end}
+  textarea{
+    flex:1;resize:none;background:var(--panel);color:var(--fg);border:1px solid var(--line);
+    border-radius:13px;padding:13px 15px;font-family:inherit;font-size:15px;line-height:1.45;
+    max-height:160px;outline:none;transition:border-color .15s;
+  }
+  textarea:focus{border-color:var(--accent-deep)}
+  textarea::placeholder{color:var(--faint)}
+  .send{
+    flex:none;width:46px;height:46px;border-radius:13px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#05221d;
+    display:grid;place-items:center;transition:.15s;
+  }
+  .send:hover:not(:disabled){filter:brightness(1.08)}
+  .send:disabled{opacity:.4;cursor:not-allowed}
+  .send svg{width:20px;height:20px}
+  .hint{max-width:820px;margin:8px auto 0;font-size:11px;color:var(--faint);text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-in">
+    <div class="logo">d</div>
+    <div class="titles">
+      <h1>doc-intel</h1>
+      <p>Agentic RAG over AI/ML papers &middot; LangGraph &middot; MCP &middot; FastAPI</p>
+    </div>
+    <a class="ghlink" href="https://github.com/Azizjouili/doc-intel-mcp" target="_blank" rel="noopener">View on GitHub</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero" id="hero">
+    <h2>Ask the papers.</h2>
+    <p>An AI agent searches a corpus of AI/ML research papers, reads the relevant passages,
+       and answers with citations &mdash; or tells you when the documents don't cover it.</p>
+    <div class="examples" id="examples"></div>
+  </div>
+  <div class="chat" id="chat"></div>
+</main>
+
+<div class="composer">
+  <div class="composer-in">
+    <textarea id="box" rows="1" placeholder="Ask a question about the papers…"></textarea>
+    <button class="send" id="send" title="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
+  <div class="hint">Answers are grounded in the document set. First reply may take a few seconds.</div>
+</div>
+
+<script>
+const EXAMPLES = [
+  {t:"Compare methods", q:"How does Self-RAG differ from standard RAG?"},
+  {t:"Evaluation", q:"What metrics does RAGAS use to evaluate RAG systems?"},
+  {t:"Fundamentals", q:"What problem does retrieval-augmented generation solve?"},
+  {t:"Out of scope", q:"What is the capital of France?"},
+];
+
+const chat = document.getElementById("chat");
+const hero = document.getElementById("hero");
+const box = document.getElementById("box");
+const sendBtn = document.getElementById("send");
+
+// render example chips
+const exWrap = document.getElementById("examples");
+EXAMPLES.forEach(e=>{
+  const b = document.createElement("button");
+  b.className = "ex";
+  b.innerHTML = `<b>${e.t}</b>${e.q}`;
+  b.onclick = ()=>{ box.value = e.q; ask(); };
+  exWrap.appendChild(b);
+});
+
+// turn [source.pdf #3] into styled chips, after markdown render
+function citeify(html){
+  return html.replace(/\[([^\]]+?\.pdf\s*#\d+)\]/g, '<span class="cite">$1</span>');
+}
+
+function addMsg(role, html){
+  hero.style.display = "none";
+  const m = document.createElement("div");
+  m.className = "msg " + role;
+  const av = role === "bot" ? "AI" : "You".slice(0,2);
+  m.innerHTML = `<div class="av">${role==="bot"?"AI":"Y"}</div><div class="bubble">${html}</div>`;
+  chat.appendChild(m);
+  m.scrollIntoView({behavior:"smooth", block:"end"});
+  return m.querySelector(".bubble");
+}
+
+let busy = false;
+async function ask(){
+  const q = box.value.trim();
+  if(!q || busy) return;
+  busy = true; sendBtn.disabled = true;
+  addMsg("user", document.createTextNode(q).textContent.replace(/</g,"&lt;"));
+  box.value = ""; box.style.height = "auto";
+
+  const bubble = addMsg("bot", `<div class="dots"><i></i><i></i><i></i></div>`);
+
+  try{
+    const r = await fetch("/ask", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({question:q}),
+    });
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    bubble.innerHTML = citeify(marked.parse(data.answer || "(no answer)"));
+    bubble.scrollIntoView({behavior:"smooth", block:"end"});
+  }catch(err){
+    bubble.innerHTML = `<p style="color:#e88">Something went wrong: ${err.message}. The demo may be rate-limited — try again in a moment.</p>`;
+  }finally{
+    busy = false; sendBtn.disabled = false; box.focus();
+  }
+}
+
+sendBtn.onclick = ask;
+box.addEventListener("keydown", e=>{
+  if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); ask(); }
+});
+box.addEventListener("input", ()=>{
+  box.style.height = "auto";
+  box.style.height = Math.min(box.scrollHeight, 160) + "px";
+});
+box.focus();
+</script>
+</body>
+</html>

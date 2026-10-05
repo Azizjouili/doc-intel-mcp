@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from doc_intel_mcp.agent import ask
@@ -9,6 +12,13 @@ app = FastAPI(
     version="0.1.0",
 )
 
+_INDEX = (Path(__file__).parent / "static" / "index.html").read_text(encoding="utf-8")
+
+
+@app.get("/", response_class=HTMLResponse)
+def home() -> HTMLResponse:
+    """Serve the chat UI."""
+    return HTMLResponse(_INDEX)
 
 class AskRequest(BaseModel):
     question: str
