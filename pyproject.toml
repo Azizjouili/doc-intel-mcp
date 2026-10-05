@@ -18,6 +18,7 @@ dependencies = [
     "pydantic>=2.13.5",
     "pypdf>=6.19.0",
     "sentence-transformers>=6.1.0",
+    "torch>=2.0.0",
     "uvicorn>=0.54.0",
 ]
 
@@ -39,3 +40,11 @@ line-length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
