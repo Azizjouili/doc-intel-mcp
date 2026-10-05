@@ -10,6 +10,10 @@ Built as two front-ends over one set of tools: an **MCP server** (usable from
 Claude Desktop or any MCP client) and a **FastAPI service** (`/ask`). Every run is
 traced in Langfuse, and answer quality is measured by an LLM-as-judge eval harness.
 
+![doc-intel demo](docs/demo.gif)
+
+> A FastAPI chat UI (served at `/`) over the agent. The project is containerized
+> with Docker and runs anywhere; the demo above is the local UI.
 ## Why this exists
 
 LLMs hallucinate about documents they weren't trained on, and a long PDF won't fit
