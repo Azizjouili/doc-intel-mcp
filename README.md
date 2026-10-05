@@ -25,17 +25,8 @@ from them.
 
 ## Architecture
 
-```
-PDFs ─► ingest ─► chunks ─► embeddings ─► vector store (ChromaDB)
-                                                  │
-                 question ─► LangGraph agent ◄─────┘
-                              │   search · read · answer
-                              ▼
-                  grounded answer with citations
-                              │
-                              ▼
-                      Langfuse trace  +  eval score
-```
+![architecture](docs/architecture.svg)
+
 
 - **Ingestion** (`ingest.py`): read PDFs → overlapping chunks → embed → store.
 - **Retrieval** (`store.py`): local embeddings (`sentence-transformers`) + ChromaDB similarity search.

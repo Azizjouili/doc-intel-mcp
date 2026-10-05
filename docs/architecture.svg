@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 540" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#5c6b66"/>
+    </marker>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#0d7d6e"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="840" height="540" fill="#f6faf9"/>
+  <text x="32" y="40" font-size="20" font-weight="700" fill="#13201d">doc-intel &#8212; architecture</text>
+  <text x="32" y="60" font-size="12.5" fill="#5c6b66">Agentic RAG: ingest once, then an agent retrieves and answers with citations.</text>
+
+  <!-- column labels -->
+  <text x="150" y="104" font-size="11" font-weight="700" letter-spacing="1.5" fill="#0a5a4f">INGEST &#183; OFFLINE</text>
+  <text x="600" y="104" font-size="11" font-weight="700" letter-spacing="1.5" fill="#0a5a4f">QUERY &#183; RUNTIME</text>
+
+  <!-- ingest column -->
+  <g>
+    <rect x="60" y="120" width="200" height="50" rx="11" fill="#fff" stroke="#cfe0db"/>
+    <text x="160" y="150" font-size="14" font-weight="600" fill="#13201d" text-anchor="middle">PDF documents</text>
+
+    <rect x="60" y="205" width="200" height="50" rx="11" fill="#fff" stroke="#cfe0db"/>
+    <text x="160" y="229" font-size="14" font-weight="600" fill="#13201d" text-anchor="middle">Chunk + embed</text>
+    <text x="160" y="246" font-size="11" fill="#5c6b66" text-anchor="middle">sentence-transformers</text>
+
+    <rect x="60" y="290" width="200" height="56" rx="11" fill="#ddefec" stroke="#0d7d6e"/>
+    <text x="160" y="316" font-size="14" font-weight="700" fill="#0a5a4f" text-anchor="middle">ChromaDB</text>
+    <text x="160" y="333" font-size="11" fill="#0a5a4f" text-anchor="middle">vector store</text>
+
+    <line x1="160" y1="170" x2="160" y2="203" stroke="#5c6b66" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <line x1="160" y1="255" x2="160" y2="288" stroke="#5c6b66" stroke-width="1.6" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- query column -->
+  <g>
+    <rect x="500" y="120" width="260" height="50" rx="11" fill="#fff" stroke="#cfe0db"/>
+    <text x="630" y="150" font-size="14" font-weight="600" fill="#13201d" text-anchor="middle">User question</text>
+
+    <rect x="500" y="205" width="260" height="118" rx="12" fill="#fff" stroke="#0d7d6e" stroke-width="1.6"/>
+    <text x="630" y="231" font-size="14.5" font-weight="700" fill="#13201d" text-anchor="middle">LangGraph agent</text>
+    <text x="630" y="249" font-size="11" fill="#5c6b66" text-anchor="middle">ReAct loop &#183; Gemini</text>
+    <line x1="520" y1="262" x2="740" y2="262" stroke="#e2ebe8"/>
+    <text x="630" y="282" font-size="11.5" fill="#0a5a4f" text-anchor="middle">tools:  list &#183; search &#183; read</text>
+    <text x="630" y="300" font-size="11.5" fill="#0a5a4f" text-anchor="middle">answer_with_citations</text>
+
+    <rect x="500" y="360" width="260" height="56" rx="11" fill="#fff" stroke="#cfe0db"/>
+    <text x="630" y="384" font-size="14" font-weight="600" fill="#13201d" text-anchor="middle">Grounded answer</text>
+    <text x="630" y="401" font-size="11" fill="#5c6b66" text-anchor="middle">cited as [source #chunk]</text>
+
+    <line x1="630" y1="170" x2="630" y2="203" stroke="#5c6b66" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <line x1="630" y1="323" x2="630" y2="358" stroke="#5c6b66" stroke-width="1.6" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- retrieval link between agent and store -->
+  <path d="M500 264 C 380 264, 360 318, 262 318" fill="none" stroke="#0d7d6e" stroke-width="1.8" marker-end="url(#arrowT)" marker-start="url(#arrowT)"/>
+  <rect x="320" y="262" width="92" height="22" rx="6" fill="#f6faf9"/>
+  <text x="366" y="277" font-size="11.5" font-weight="600" fill="#0a5a4f" text-anchor="middle">retrieve</text>
+
+  <!-- observability -->
+  <rect x="500" y="455" width="125" height="46" rx="10" fill="#fff" stroke="#cfe0db"/>
+  <text x="562" y="476" font-size="12.5" font-weight="600" fill="#13201d" text-anchor="middle">Langfuse</text>
+  <text x="562" y="491" font-size="10.5" fill="#5c6b66" text-anchor="middle">traces</text>
+
+  <rect x="635" y="455" width="125" height="46" rx="10" fill="#fff" stroke="#cfe0db"/>
+  <text x="697" y="476" font-size="12.5" font-weight="600" fill="#13201d" text-anchor="middle">Eval harness</text>
+  <text x="697" y="491" font-size="10.5" fill="#5c6b66" text-anchor="middle">LLM-as-judge</text>
+
+  <line x1="562" y1="416" x2="562" y2="453" stroke="#5c6b66" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <line x1="697" y1="416" x2="697" y2="453" stroke="#5c6b66" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+
+  <!-- interfaces footnote -->
+  <text x="630" y="190" font-size="10.5" fill="#8a9994" text-anchor="middle">exposed via MCP server &amp; FastAPI</text>
+</svg>
