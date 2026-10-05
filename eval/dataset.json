@@ -1,5 +1,8 @@
 [
   {"question": "How does Self-RAG differ from standard RAG?"},
   {"question": "What metrics does RAGAS use to evaluate RAG systems?"},
-  {"question": "What problem does retrieval-augmented generation solve for language models?"}
+  {"question": "What problem does retrieval-augmented generation solve for language models?"},
+  {"question": "What is the capital of France?"},
+  {"question": "What were the exact GPU training costs and hardware budget in the Self-RAG paper?"},
+  {"question": "Compare the evaluation approaches of RAGAS and Self-RAG."}
 ]

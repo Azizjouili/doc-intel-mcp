@@ -30,3 +30,29 @@ def ask_endpoint(req: AskRequest) -> AskResponse:
     """Answer a question using the document-intelligence agent."""
     answer = ask(req.question)
     return AskResponse(question=req.question, answer=answer)
+
+import gradio as gr
+
+
+def _chat(message, history):
+    """Gradio chat handler — routes each message through the agent."""
+    return ask(message)
+
+
+demo = gr.ChatInterface(
+    _chat,
+    title="doc-intel · ask the papers",
+    description=(
+        "An agentic RAG system over a set of AI/ML papers. Ask a question and the "
+        "agent searches, reads, and answers with citations — or says when the "
+        "documents don't cover it. Built with LangGraph + MCP + FastAPI."
+    ),
+    examples=[
+        "How does Self-RAG differ from standard RAG?",
+        "What metrics does RAGAS use to evaluate RAG systems?",
+        "What problem does retrieval-augmented generation solve?",
+    ],
+)
+
+# Mount the chat UI at "/" ; the API stays at /ask, docs at /docs.
+app = gr.mount_gradio_app(app, demo, path="/")
