@@ -1,0 +1,5 @@
+[
+  {"question": "How does Self-RAG differ from standard RAG?"},
+  {"question": "What metrics does RAGAS use to evaluate RAG systems?"},
+  {"question": "What problem does retrieval-augmented generation solve for language models?"}
+]
