@@ -1,8 +1,17 @@
+import pytest
+
 from doc_intel_mcp.store import DocumentStore
 
 
-def test_search_returns_relevant_chunk():
-    store = DocumentStore()
+@pytest.fixture
+def store():
+    s = DocumentStore()
+    if s.count() == 0:
+        pytest.skip("No ingested documents (run `uv run python -m doc_intel_mcp.ingest`)")
+    return s
+
+
+def test_search_returns_relevant_chunk(store):
     hits = store.search("retrieval augmented generation", n_results=3)
     assert len(hits) > 0
     # every hit carries the metadata the tools rely on
@@ -11,7 +20,5 @@ def test_search_returns_relevant_chunk():
         assert "chunk" in h["metadata"]
 
 
-def test_store_has_documents():
-    store = DocumentStore()
-    assert store.count() > 0
+def test_store_lists_sources(store):
     assert len(store.list_sources()) > 0
