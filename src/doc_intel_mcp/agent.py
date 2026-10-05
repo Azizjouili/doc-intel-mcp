@@ -3,6 +3,7 @@ import sys
 from langchain.agents import create_agent
 from langchain_core.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langfuse.langchain import CallbackHandler
 
 from doc_intel_mcp.tools.answer import answer_with_citations as _answer
 from doc_intel_mcp.tools.documents import list_documents as _list
@@ -48,11 +49,17 @@ def _extract_text(content) -> str:
 
 def ask(question: str) -> str:
     agent = build_agent()
-    result = agent.invoke({"messages": [("user", question)]})
+    handler = CallbackHandler()
+    result = agent.invoke(
+        {"messages": [("user", question)]},
+        config={"callbacks": [handler]},
+    )
     return _extract_text(result["messages"][-1].content)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print('Usage: python -m doc_intel_mcp.agent "your question"')
         sys.exit(1)
+    from langfuse import get_client
     print(ask(" ".join(sys.argv[1:])))
+    get_client().flush()
