@@ -1,24 +1,25 @@
 FROM python:3.12-slim AS base
 
-# uv from PyPI (avoids the flaky ghcr.io pull)
 RUN pip install --no-cache-dir uv
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_HTTP_TIMEOUT=300 \
-    UV_CONCURRENT_DOWNLOADS=2
+    HF_HOME=/app/.hfcache
 
 WORKDIR /app
 
-# Dependency manifests first (cached layer)
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 
-# Then the source
 COPY src ./src
+COPY scripts ./scripts
 COPY README.md ./
 RUN uv sync --frozen --no-dev
+
+# Build the demo index (downloads a few papers + embeds them) at build time.
+RUN uv run python scripts/prepare_demo.py
 
 EXPOSE 8000
 
